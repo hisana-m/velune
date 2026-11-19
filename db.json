@@ -1,0 +1,851 @@
+{
+  "categories": [
+    {
+      "id": "1",
+      "name": "Necklaces",
+      "slug": "necklaces",
+      "image": "/images/categories/necklaces.jpg"
+    },
+    {
+      "id": "2",
+      "name": "Earrings",
+      "slug": "earrings",
+      "image": "/images/categories/earrings.jpg"
+    },
+    {
+      "id": "3",
+      "name": "Rings",
+      "slug": "rings",
+      "image": "/images/categories/rings.jpg"
+    },
+    {
+      "id": "4",
+      "name": "Bracelets",
+      "slug": "bracelets",
+      "image": "/images/categories/bracelets.jpg"
+    }
+  ],
+  "products": [
+    {
+      "id": "1",
+      "name": "Filigree Gold Drop Earrings",
+      "price": 2900,
+      "currency": "AED",
+      "category": "earrings",
+      "categorySlug": "earrings",
+      "image": "/images/earing1.jpg",
+      "description": "An elegant jewellery design.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "2",
+      "name": "Ruby Elegance Ring",
+      "price": 5350,
+      "currency": "AED",
+      "category": "ring",
+      "categorySlug": "rings",
+      "image": "/images/ring2.jpg",
+      "description": "An elegant ring design.",
+      "isBestSeller": true,
+      "stock": 5
+    },
+    {
+      "id": "3",
+      "name": "Pearl Gold Cuff Bracelet",
+      "price": 4300,
+      "currency": "AED",
+      "category": "bracelet",
+      "categorySlug": "bracelets",
+      "image": "/images/bracelet1.jpg",
+      "description": "An elegant bracelet design.",
+      "isBestSeller": true,
+      "stock": 5
+    },
+    {
+      "id": "4",
+      "name": "Seashell Pendant Necklace",
+      "price": 2750,
+      "currency": "AED",
+      "category": "necklace",
+      "categorySlug": "necklaces",
+      "image": "/images/necklace2.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "5",
+      "name": "Diamond Y Necklace",
+      "price": 3200,
+      "currency": "AED",
+      "category": "necklace",
+      "categorySlug": "necklaces",
+      "image": "/images/necklace3.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": true,
+      "stock": 5
+    },
+    {
+      "id": "6",
+      "name": "Amethyst Stone Earrings",
+      "price": 2450,
+      "currency": "AED",
+      "category": "earrings",
+      "categorySlug": "earrings",
+      "image": "/images/earing3.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": true,
+      "stock": 5
+    },
+    {
+      "id": "7",
+      "name": "Emerald Solitaire Ring",
+      "price": 3550,
+      "currency": "AED",
+      "category": "ring",
+      "categorySlug": "rings",
+      "image": "/images/ring3.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "8",
+      "name": "Golden Pearl Hoop Earrings",
+      "price": 2350,
+      "currency": "AED",
+      "category": "earrings",
+      "categorySlug": "earrings",
+      "image": "/images/earing2.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "9",
+      "name": "Floral Diamond Bracelet",
+      "price": 3100,
+      "currency": "AED",
+      "category": "bracelet",
+      "categorySlug": "bracelets",
+      "image": "/images/bracelet3.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "10",
+      "name": "Pearl Cascade Necklace",
+      "price": 3200,
+      "currency": "AED",
+      "category": "necklace",
+      "categorySlug": "necklaces",
+      "image": "/images/necklace1.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "11",
+      "name": "Amethyst Solitaire Ring",
+      "price": 2900,
+      "currency": "AED",
+      "category": "ring",
+      "categorySlug": "rings",
+      "image": "/images/ring1.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "12",
+      "name": "Pearl Accent Cuff Bracelet",
+      "price": 1500,
+      "currency": "AED",
+      "category": "bracelet",
+      "categorySlug": "bracelets",
+      "image": "/images/bracelet1.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "13",
+      "name": "Emerald Elegance Necklace",
+      "price": 3350,
+      "currency": "AED",
+      "category": "necklace",
+      "categorySlug": "necklaces",
+      "image": "/images/products/emerald-necklace.jpg",
+      "description": "An elegant emerald-inspired necklace designed for timeless beauty.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "14",
+      "name": "Emerald Drop Earrings",
+      "price": 5300,
+      "currency": "AED",
+      "category": "earrings",
+      "categorySlug": "earrings",
+      "image": "/images/earing4.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "15",
+      "name": "Baroque Pearl Pendant Necklace",
+      "price": 1800,
+      "currency": "AED",
+      "category": "necklace",
+      "categorySlug": "necklaces",
+      "image": "/images/necklace4.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "16",
+      "name": "Royal Diamond Cluster Ring",
+      "price": 4500,
+      "currency": "AED",
+      "category": "ring",
+      "categorySlug": "rings",
+      "image": "/images/ring4.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": true,
+      "stock": 5
+    },
+    {
+      "id": "17",
+      "name": "Golden Pearl Earrings",
+      "price": 2900,
+      "currency": "AED",
+      "category": "earring",
+      "categorySlug": "earrings",
+      "image": "/images/products/golden-pearl-earrings.jpg",
+      "description": "Beautiful pearl earrings with a luxurious golden finish.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "18",
+      "name": "Blue Sapphire Station Bracelet",
+      "price": 3050,
+      "currency": "AED",
+      "category": "bracelet",
+      "categorySlug": "bracelets",
+      "image": "/images/bracelet4.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": true,
+      "stock": 5
+    },
+    {
+      "id": "19",
+      "name": "Golden Charm Bracelet",
+      "price": 1800,
+      "currency": "AED",
+      "category": "bracelet",
+      "categorySlug": "bracelets",
+      "image": "/images/bracelet5.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "20",
+      "name": "Emerald Royal Earrings",
+      "price": 5500,
+      "currency": "AED",
+      "category": "earrings",
+      "categorySlug": "earrings",
+      "image": "/images/earing5.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "21",
+      "name": "Delicate Gold Station Necklace",
+      "price": 2400,
+      "currency": "AED",
+      "category": "necklace",
+      "categorySlug": "necklaces",
+      "image": "/images/necklace5.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "22",
+      "name": "Tourmaline Elegance Ring",
+      "price": 2700,
+      "currency": "AED",
+      "category": "ring",
+      "categorySlug": "rings",
+      "image": "/images/ring5.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "23",
+      "name": "Pearl Drop Earrings",
+      "price": 2400,
+      "currency": "AED",
+      "category": "earrings",
+      "categorySlug": "earrings",
+      "image": "/images/earing6.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "24",
+      "name": "Golden Beaded Bracelet",
+      "price": 2600,
+      "currency": "AED",
+      "category": "bracelet",
+      "categorySlug": "bracelets",
+      "image": "/images/bracelet6.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "25",
+      "name": "Royal Blue Sapphire Ring",
+      "price": 3900,
+      "currency": "AED",
+      "category": "ring",
+      "categorySlug": "rings",
+      "image": "/images/ring6.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "26",
+      "name": "Emerald Pendant Necklace",
+      "price": 3100,
+      "currency": "AED",
+      "category": "necklace",
+      "categorySlug": "necklaces",
+      "image": "/images/necklace6.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "27",
+      "name": "Ruby Heart Ring",
+      "price": 2900,
+      "currency": "AED",
+      "category": "ring",
+      "categorySlug": "rings",
+      "image": "/images/ring7.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "28",
+      "name": "Classic Pearl Bracelet",
+      "price": 2200,
+      "currency": "AED",
+      "category": "bracelet",
+      "categorySlug": "bracelets",
+      "image": "/images/bracelet7.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "29",
+      "name": "Royal Diamond Ring",
+      "price": 2800,
+      "currency": "AED",
+      "category": "ring",
+      "categorySlug": "rings",
+      "image": "/images/products/royal-diamond-ring.jpg",
+      "description": "A sophisticated ring inspired by timeless royal elegance.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "30",
+      "name": "Golden Pearl Drop Earrings",
+      "price": 2100,
+      "currency": "AED",
+      "category": "earrings",
+      "categorySlug": "earrings",
+      "image": "/images/earing7.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": true,
+      "stock": 5
+    },
+    {
+      "id": "31",
+      "name": "Three Stone Diamond Necklace",
+      "price": 5200,
+      "currency": "AED",
+      "category": "necklace",
+      "categorySlug": "necklaces",
+      "image": "/images/necklace7.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": true,
+      "stock": 5
+    },
+    {
+      "id": "32",
+      "name": "Golden Charm Bracelet",
+      "price": 1700,
+      "currency": "AED",
+      "category": "bracelet",
+      "categorySlug": "bracelets",
+      "image": "/images/bracelet8.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "33",
+      "name": "Interlocking Circle Earrings",
+      "price": 1950,
+      "currency": "AED",
+      "category": "earrings",
+      "categorySlug": "earrings",
+      "image": "/images/earing8.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "34",
+      "name": "Layered Gold Necklace",
+      "price": 3300,
+      "currency": "AED",
+      "category": "necklace",
+      "categorySlug": "necklaces",
+      "image": "/images/necklace8.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "35",
+      "name": "Blue Topaz Solitaire Ring",
+      "price": 2900,
+      "currency": "AED",
+      "category": "ring",
+      "categorySlug": "rings",
+      "image": "/images/ring8.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "36",
+      "name": "Radiant Teardrop Earrings",
+      "price": 2250,
+      "currency": "AED",
+      "category": "earrings",
+      "categorySlug": "earrings",
+      "image": "/images/earing9.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "37",
+      "name": "Classic Gold Bracelet",
+      "price": 2700,
+      "currency": "AED",
+      "category": "bracelet",
+      "categorySlug": "bracelets",
+      "image": "/images/products/classic-gold-bracelet.jpg",
+      "description": "A classic gold bracelet that completes every elegant look.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "38",
+      "name": "Diamond Drop Necklace",
+      "price": 3800,
+      "currency": "AED",
+      "category": "necklace",
+      "categorySlug": "necklaces",
+      "image": "/images/necklace9.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "39",
+      "name": "Floral Petite Gold Ring",
+      "price": 2850,
+      "currency": "AED",
+      "category": "ring",
+      "categorySlug": "rings",
+      "image": "/images/ring9.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": false,
+      "stock": 5
+    },
+    {
+      "id": "40",
+      "name": "Dainty Bezel Chain Bracelet",
+      "price": 2600,
+      "currency": "AED",
+      "category": "bracelet",
+      "categorySlug": "bracelets",
+      "image": "/images/bracelet9.jpg",
+      "description": "An elegant necklace design.",
+      "isBestSeller": false,
+      "stock": 5
+    }
+  ],
+  "collections": [
+    {
+      "id": "1",
+      "name": "Featured Jewellery",
+      "description": "Explore the VÉLUNE collection.",
+      "categorySlugs": [
+        "necklaces",
+        "earrings",
+        "rings",
+        "bracelets"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "name": "hisana",
+      "email": "hey.hisana@gmail.com",
+      "password": "12345678",
+      "id": "7Xc1fwhSaME"
+    }
+  ],
+  "orders": [
+    {
+      "customer": {
+        "name": "gtehge4t",
+        "email": "tgeg@rf.com",
+        "phone": "tgehgt",
+        "address": "tehdw",
+        "city": "trghe",
+        "country": "htewhew"
+      },
+      "products": [
+        {
+          "id": "3",
+          "name": "Pearl Gold Cuff Bracelet",
+          "price": 4300,
+          "currency": "AED",
+          "category": "bracelet",
+          "categorySlug": "bracelets",
+          "image": "/images/bracelet1.jpg",
+          "description": "An elegant bracelet design.",
+          "isBestSeller": true,
+          "quantity": 1
+        },
+        {
+          "id": "30",
+          "name": "Golden Pearl Drop Earrings",
+          "price": 2100,
+          "currency": "AED",
+          "category": "earrings",
+          "categorySlug": "earrings",
+          "image": "/images/earing7.jpg",
+          "description": "An elegant necklace design.",
+          "isBestSeller": true,
+          "quantity": 1
+        },
+        {
+          "id": "10",
+          "name": "Pearl Cascade Necklace",
+          "price": 3200,
+          "currency": "AED",
+          "category": "necklace",
+          "categorySlug": "necklaces",
+          "image": "/images/necklace1.jpg",
+          "description": "An elegant necklace design.",
+          "isBestSeller": false,
+          "quantity": 1
+        }
+      ],
+      "paymentMethod": "Cash on Delivery",
+      "subtotal": 9600,
+      "shipping": 0,
+      "total": 9600,
+      "status": "Pending",
+      "paymentStatus": "Pending",
+      "createdAt": "2026-11-18T06:16:45.814Z",
+      "id": "XKjgJKWv6VE"
+    },
+    {
+      "customer": {
+        "name": "Hisana",
+        "email": "hey.hisana@gmail.com",
+        "phone": "cefre",
+        "address": "2we",
+        "city": "cfre",
+        "country": "dewfd"
+      },
+      "products": [
+        {
+          "id": "18",
+          "name": "Blue Sapphire Station Bracelet",
+          "price": 3050,
+          "currency": "AED",
+          "category": "bracelet",
+          "categorySlug": "bracelets",
+          "image": "/images/bracelet4.jpg",
+          "description": "An elegant necklace design.",
+          "isBestSeller": true,
+          "quantity": 1
+        }
+      ],
+      "paymentMethod": "Online Payment",
+      "subtotal": 3050,
+      "shipping": 0,
+      "total": 3050,
+      "status": "Pending",
+      "paymentStatus": "Awaiting Online Payment",
+      "createdAt": "2026-11-18T06:17:39.813Z",
+      "id": "AQBO8HN5u-c"
+    },
+    {
+      "customer": {
+        "name": "dgdg",
+        "email": "hey.hisana@gmail.com",
+        "phone": "cefre",
+        "address": "uyg",
+        "city": "cfre",
+        "country": "ji"
+      },
+      "products": [
+        {
+          "id": "5",
+          "name": "Diamond Y Necklace",
+          "price": 3200,
+          "currency": "AED",
+          "category": "necklace",
+          "categorySlug": "necklaces",
+          "image": "/images/necklace3.jpg",
+          "description": "An elegant necklace design.",
+          "isBestSeller": true,
+          "quantity": 2
+        },
+        {
+          "id": "2",
+          "name": "Ruby Elegance Ring",
+          "price": 5350,
+          "currency": "AED",
+          "category": "ring",
+          "categorySlug": "rings",
+          "image": "/images/ring2.jpg",
+          "description": "An elegant ring design.",
+          "isBestSeller": true,
+          "quantity": 1
+        },
+        {
+          "id": "4",
+          "name": "Seashell Pendant Necklace",
+          "price": 2750,
+          "currency": "AED",
+          "category": "necklace",
+          "categorySlug": "necklaces",
+          "image": "/images/necklace2.jpg",
+          "description": "An elegant necklace design.",
+          "isBestSeller": false,
+          "quantity": 3
+        }
+      ],
+      "paymentMethod": "Cash on Delivery",
+      "subtotal": 20000,
+      "shipping": 0,
+      "total": 20000,
+      "status": "Pending",
+      "paymentStatus": "Pending",
+      "createdAt": "2026-11-18T10:00:29.667Z",
+      "id": "sBQsXdTYncQ"
+    },
+    {
+      "customer": {
+        "name": "Hisana",
+        "email": "hey.hisana@gmail.com",
+        "phone": "cefre",
+        "address": " ntyr",
+        "city": "ghede",
+        "country": "yur"
+      },
+      "products": [
+        {
+          "id": "3",
+          "name": "Pearl Gold Cuff Bracelet",
+          "price": 4300,
+          "currency": "AED",
+          "category": "bracelet",
+          "categorySlug": "bracelets",
+          "image": "/images/bracelet1.jpg",
+          "description": "An elegant bracelet design.",
+          "isBestSeller": true,
+          "stock": 5,
+          "quantity": 5
+        }
+      ],
+      "paymentMethod": "Cash on Delivery",
+      "subtotal": 21500,
+      "shipping": 0,
+      "total": 21500,
+      "status": "Pending",
+      "paymentStatus": "Pending",
+      "createdAt": "2026-11-19T05:55:28.318Z",
+      "id": "9yAfEEvklSA"
+    },
+    {
+      "customer": {
+        "name": "Hisana",
+        "email": "hey.hisana@gmail.com",
+        "phone": "cefre",
+        "address": "cghgjhkj",
+        "city": "fg",
+        "country": "fgh"
+      },
+      "products": [
+        {
+          "id": "3",
+          "name": "Pearl Gold Cuff Bracelet",
+          "price": 4300,
+          "currency": "AED",
+          "category": "bracelet",
+          "categorySlug": "bracelets",
+          "image": "/images/bracelet1.jpg",
+          "description": "An elegant bracelet design.",
+          "isBestSeller": true,
+          "stock": 5,
+          "quantity": 5
+        }
+      ],
+      "paymentMethod": "Online Payment",
+      "subtotal": 21500,
+      "shipping": 0,
+      "total": 21500,
+      "status": "Pending",
+      "paymentStatus": "Awaiting Online Payment",
+      "createdAt": "2026-11-19T05:56:21.432Z",
+      "id": "0JFuzSuwDw8"
+    },
+    {
+      "customer": {
+        "name": "Hisana",
+        "email": "hey.hisana@gmail.com",
+        "phone": "cefre",
+        "address": "nn,mbuihj ",
+        "city": "uhij",
+        "country": "bjn"
+      },
+      "products": [
+        {
+          "id": "3",
+          "name": "Pearl Gold Cuff Bracelet",
+          "price": 4300,
+          "currency": "AED",
+          "category": "bracelet",
+          "categorySlug": "bracelets",
+          "image": "/images/bracelet1.jpg",
+          "description": "An elegant bracelet design.",
+          "isBestSeller": true,
+          "stock": 0,
+          "quantity": 5
+        }
+      ],
+      "paymentMethod": "Cash on Delivery",
+      "subtotal": 21500,
+      "shipping": 0,
+      "total": 21500,
+      "status": "Pending",
+      "paymentStatus": "Pending",
+      "createdAt": "2026-11-19T06:12:31.931Z",
+      "id": "w3KpcJyBN5Y"
+    },
+    {
+      "customer": {
+        "name": "Hisana",
+        "email": "hey.hisana@gmail.com",
+        "phone": "cefre",
+        "address": "nbvc",
+        "city": "cfre",
+        "country": "dfrghj"
+      },
+      "products": [
+        {
+          "id": "2",
+          "name": "Ruby Elegance Ring",
+          "price": 5350,
+          "currency": "AED",
+          "category": "ring",
+          "categorySlug": "rings",
+          "image": "/images/ring2.jpg",
+          "description": "An elegant ring design.",
+          "isBestSeller": true,
+          "stock": 0,
+          "quantity": 5
+        }
+      ],
+      "paymentMethod": "Cash on Delivery",
+      "subtotal": 26750,
+      "shipping": 0,
+      "total": 26750,
+      "status": "Pending",
+      "paymentStatus": "Pending",
+      "createdAt": "2026-11-19T06:28:07.034Z",
+      "id": "413TTq_Xiww"
+    },
+    {
+      "customer": {
+        "name": "Hisana",
+        "email": "hey.hisana@gmail.com",
+        "phone": "cefre",
+        "address": "gcf",
+        "city": "trghe",
+        "country": "hgh"
+      },
+      "products": [
+        {
+          "id": "4",
+          "name": "Seashell Pendant Necklace",
+          "price": 2750,
+          "currency": "AED",
+          "category": "necklace",
+          "categorySlug": "necklaces",
+          "image": "/images/necklace2.jpg",
+          "description": "An elegant necklace design.",
+          "isBestSeller": false,
+          "stock": 0,
+          "quantity": 5
+        }
+      ],
+      "paymentMethod": "Cash on Delivery",
+      "subtotal": 13750,
+      "shipping": 0,
+      "total": 13750,
+      "status": "Pending",
+      "paymentStatus": "Pending",
+      "createdAt": "2026-11-19T06:31:24.200Z",
+      "id": "6RoxhL0tytI"
+    }
+  ],
+  "cart": [],
+  "wishlist": [
+    {
+      "userId": "7Xc1fwhSaME",
+      "productId": "3",
+      "id": "b6NUUykonyk"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
