@@ -1,31 +1,45 @@
+
 import { getProducts } from "./products";
 
 const API_URL = "http://localhost:3000";
 
-// --- Cart Helpers ---
+// ---------------- COMMON HELPERS ----------------
+
+async function apiRequest(endpoint, options = {}) {
+  const response = await fetch(`${API_URL}${endpoint}`, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Request failed (${response.status}). Please try again.`);
+  }
+
+  if (response.status === 204) return null;
+
+  return response.json();
+}
+
+// ---------------- CART HELPERS ----------------
 
 export async function getUserCart(userId) {
   if (!userId) return [];
 
-  const [products, cartRes] = await Promise.all([
+  const [products, allCart] = await Promise.all([
     getProducts(),
-    fetch(`${API_URL}/cart`),
+    apiRequest("/cart"),
   ]);
 
-  if (!cartRes.ok) {
-    throw new Error("Failed to fetch cart items");
-  }
-
-  const allCart = await cartRes.json();
-  const userCart = allCart.filter(
-    (item) => String(item.userId) === String(userId)
-  );
-
-  return userCart
+  return allCart
+    .filter((item) => String(item.userId) === String(userId))
     .map((entry) => {
       const product = products.find(
         (p) => String(p.id) === String(entry.productId)
       );
+
       if (!product) return null;
 
       return {
@@ -39,19 +53,12 @@ export async function getUserCart(userId) {
 }
 
 export async function addCartItem(userId, product, quantity = 1) {
-  if (!userId) {
-    throw new Error("Please log in first.");
-  }
-  if (!product || !product.id) {
-    throw new Error("Invalid product.");
-  }
+  if (!userId) throw new Error("Please log in first.");
 
-  const cartRes = await fetch(`${API_URL}/cart`);
-  if (!cartRes.ok) {
-    throw new Error("Failed to load cart");
-  }
+  if (!product?.id) throw new Error("Invalid product.");
 
-  const allCart = await cartRes.json();
+  const allCart = await apiRequest("/cart");
+
   const existing = allCart.find(
     (item) =>
       String(item.userId) === String(userId) &&
@@ -59,106 +66,88 @@ export async function addCartItem(userId, product, quantity = 1) {
   );
 
   const stock = Number(product.stock ?? 0);
-  const addQty = Number(quantity) || 1;
-  const targetQty = (existing ? Number(existing.quantity) : 0) + addQty;
+  const addQty = Math.max(1, Number(quantity) || 1);
+  const currentQty = existing ? Number(existing.quantity) || 0 : 0;
+  const targetQty = currentQty + addQty;
 
-  if (stock > 0 && targetQty > stock) {
+  if (stock <= 0) {
+    throw new Error("This product is out of stock.");
+  }
+
+  if (targetQty > stock) {
     throw new Error(`Only ${stock} unit(s) available in stock.`);
   }
 
   if (existing) {
-    const updateRes = await fetch(`${API_URL}/cart/${existing.id}`, {
+    await apiRequest(`/cart/${existing.id}`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ quantity: targetQty }),
     });
-    if (!updateRes.ok) {
-      throw new Error("Failed to update cart item quantity");
-    }
   } else {
-    const createRes = await fetch(`${API_URL}/cart`, {
+    await apiRequest("/cart", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         userId: String(userId),
         productId: String(product.id),
         quantity: addQty,
       }),
     });
-    if (!createRes.ok) {
-      throw new Error("Failed to add item to cart");
-    }
   }
 
-  return await getUserCart(userId);
+  return getUserCart(userId);
 }
 
 export async function changeCartQuantity(userId, productId, delta) {
-  if (!userId) {
-    throw new Error("Please log in first.");
-  }
+  if (!userId) throw new Error("Please log in first.");
 
-  const [products, cartRes] = await Promise.all([
+  const [products, allCart] = await Promise.all([
     getProducts(),
-    fetch(`${API_URL}/cart`),
+    apiRequest("/cart"),
   ]);
 
-  if (!cartRes.ok) {
-    throw new Error("Failed to load cart");
-  }
-
-  const allCart = await cartRes.json();
   const existing = allCart.find(
     (item) =>
       String(item.userId) === String(userId) &&
       String(item.productId) === String(productId)
   );
 
-  if (!existing) {
-    return await getUserCart(userId);
-  }
+  if (!existing) return getUserCart(userId);
 
-  const newQty = Number(existing.quantity) + delta;
+  const newQty = (Number(existing.quantity) || 0) + delta;
 
   if (newQty <= 0) {
-    await fetch(`${API_URL}/cart/${existing.id}`, {
+    await apiRequest(`/cart/${existing.id}`, {
       method: "DELETE",
     });
-  } else {
-    if (delta > 0) {
-      const product = products.find(
-        (p) => String(p.id) === String(productId)
-      );
-      const stock = Number(product?.stock ?? 0);
-      if (stock > 0 && newQty > stock) {
-        throw new Error("Maximum stock reached.");
-      }
-    }
 
-    const updateRes = await fetch(`${API_URL}/cart/${existing.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ quantity: newQty }),
-    });
-    if (!updateRes.ok) {
-      throw new Error("Failed to update cart quantity");
+    return getUserCart(userId);
+  }
+
+  const product = products.find(
+    (p) => String(p.id) === String(productId)
+  );
+
+  if (delta > 0) {
+    const stock = Number(product?.stock ?? 0);
+
+    if (newQty > stock) {
+      throw new Error("Maximum stock reached.");
     }
   }
 
-  return await getUserCart(userId);
+  await apiRequest(`/cart/${existing.id}`, {
+    method: "PATCH",
+    body: JSON.stringify({ quantity: newQty }),
+  });
+
+  return getUserCart(userId);
 }
 
 export async function deleteCartItem(userId, productId) {
-  if (!userId) {
-    throw new Error("Please log in first.");
-  }
+  if (!userId) throw new Error("Please log in first.");
 
-  const cartRes = await fetch(`${API_URL}/cart`);
-  if (!cartRes.ok) {
-    throw new Error("Failed to load cart");
-  }
+  const allCart = await apiRequest("/cart");
 
-  const allCart = await cartRes.json();
   const existing = allCart.find(
     (item) =>
       String(item.userId) === String(userId) &&
@@ -166,63 +155,51 @@ export async function deleteCartItem(userId, productId) {
   );
 
   if (existing) {
-    const delRes = await fetch(`${API_URL}/cart/${existing.id}`, {
+    await apiRequest(`/cart/${existing.id}`, {
       method: "DELETE",
     });
-    if (!delRes.ok) {
-      throw new Error("Failed to remove item from cart");
-    }
   }
 
-  return await getUserCart(userId);
+  return getUserCart(userId);
 }
 
 export async function emptyUserCart(userId) {
   if (!userId) return [];
 
-  const cartRes = await fetch(`${API_URL}/cart`);
-  if (!cartRes.ok) {
-    throw new Error("Failed to load cart");
-  }
+  const allCart = await apiRequest("/cart");
 
-  const allCart = await cartRes.json();
   const userItems = allCart.filter(
     (item) => String(item.userId) === String(userId)
   );
 
   await Promise.all(
     userItems.map((item) =>
-      fetch(`${API_URL}/cart/${item.id}`, { method: "DELETE" })
+      apiRequest(`/cart/${item.id}`, {
+        method: "DELETE",
+      })
     )
   );
 
   return [];
 }
 
-// --- Wishlist Helpers ---
+// ---------------- WISHLIST HELPERS ----------------
 
 export async function getUserWishlist(userId) {
   if (!userId) return [];
 
-  const [products, wishlistRes] = await Promise.all([
+  const [products, allWishlist] = await Promise.all([
     getProducts(),
-    fetch(`${API_URL}/wishlist`),
+    apiRequest("/wishlist"),
   ]);
 
-  if (!wishlistRes.ok) {
-    throw new Error("Failed to fetch wishlist");
-  }
-
-  const allWishlist = await wishlistRes.json();
-  const userWishlist = allWishlist.filter(
-    (item) => String(item.userId) === String(userId)
-  );
-
-  return userWishlist
+  return allWishlist
+    .filter((item) => String(item.userId) === String(userId))
     .map((entry) => {
       const product = products.find(
         (p) => String(p.id) === String(entry.productId)
       );
+
       if (!product) return null;
 
       return {
@@ -235,19 +212,12 @@ export async function getUserWishlist(userId) {
 }
 
 export async function toggleWishlistItem(userId, product) {
-  if (!userId) {
-    throw new Error("Please log in first.");
-  }
-  if (!product || !product.id) {
-    throw new Error("Invalid product.");
-  }
+  if (!userId) throw new Error("Please log in first.");
 
-  const wishlistRes = await fetch(`${API_URL}/wishlist`);
-  if (!wishlistRes.ok) {
-    throw new Error("Failed to load wishlist");
-  }
+  if (!product?.id) throw new Error("Invalid product.");
 
-  const allWishlist = await wishlistRes.json();
+  const allWishlist = await apiRequest("/wishlist");
+
   const existing = allWishlist.find(
     (item) =>
       String(item.userId) === String(userId) &&
@@ -255,40 +225,27 @@ export async function toggleWishlistItem(userId, product) {
   );
 
   if (existing) {
-    const delRes = await fetch(`${API_URL}/wishlist/${existing.id}`, {
+    await apiRequest(`/wishlist/${existing.id}`, {
       method: "DELETE",
     });
-    if (!delRes.ok) {
-      throw new Error("Failed to remove item from wishlist");
-    }
   } else {
-    const addRes = await fetch(`${API_URL}/wishlist`, {
+    await apiRequest("/wishlist", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         userId: String(userId),
         productId: String(product.id),
       }),
     });
-    if (!addRes.ok) {
-      throw new Error("Failed to add item to wishlist");
-    }
   }
 
-  return await getUserWishlist(userId);
+  return getUserWishlist(userId);
 }
 
 export async function deleteWishlistItem(userId, productId) {
-  if (!userId) {
-    throw new Error("Please log in first.");
-  }
+  if (!userId) throw new Error("Please log in first.");
 
-  const wishlistRes = await fetch(`${API_URL}/wishlist`);
-  if (!wishlistRes.ok) {
-    throw new Error("Failed to load wishlist");
-  }
+  const allWishlist = await apiRequest("/wishlist");
 
-  const allWishlist = await wishlistRes.json();
   const existing = allWishlist.find(
     (item) =>
       String(item.userId) === String(userId) &&
@@ -296,33 +253,28 @@ export async function deleteWishlistItem(userId, productId) {
   );
 
   if (existing) {
-    const delRes = await fetch(`${API_URL}/wishlist/${existing.id}`, {
+    await apiRequest(`/wishlist/${existing.id}`, {
       method: "DELETE",
     });
-    if (!delRes.ok) {
-      throw new Error("Failed to remove item from wishlist");
-    }
   }
 
-  return await getUserWishlist(userId);
+  return getUserWishlist(userId);
 }
 
 export async function emptyUserWishlist(userId) {
   if (!userId) return [];
 
-  const wishlistRes = await fetch(`${API_URL}/wishlist`);
-  if (!wishlistRes.ok) {
-    throw new Error("Failed to load wishlist");
-  }
+  const allWishlist = await apiRequest("/wishlist");
 
-  const allWishlist = await wishlistRes.json();
   const userItems = allWishlist.filter(
     (item) => String(item.userId) === String(userId)
   );
 
   await Promise.all(
     userItems.map((item) =>
-      fetch(`${API_URL}/wishlist/${item.id}`, { method: "DELETE" })
+      apiRequest(`/wishlist/${item.id}`, {
+        method: "DELETE",
+      })
     )
   );
 

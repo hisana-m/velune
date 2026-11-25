@@ -1,13 +1,13 @@
 
 import { Link, useSearchParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   getCategories,
   getProducts,
   formatPrice,
 } from "../../data/products";
 import SiteFrame from "../../components/SiteFrame";
-import { Search, X } from "lucide-react";
+import { Search, X, ArrowRight } from "lucide-react";
 
 export default function Collections() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -19,11 +19,42 @@ export default function Collections() {
   const [selectedCategory, setSelectedCategory] = useState(categoryFromUrl);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortOrder, setSortOrder] = useState("default");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [inputValue, setInputValue] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const searchContainerRef = useRef(null);
+
   const productsPerPage = 12;
+
+  // Debounce search input (300ms)
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedQuery(inputValue);
+      setCurrentPage(1);
+    }, 300);
+
+    return () => clearTimeout(handler);
+  }, [inputValue]);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(event.target)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // Load Categories and Products
   useEffect(() => {
@@ -56,9 +87,24 @@ export default function Collections() {
     setCurrentPage(1);
   }, [searchParams]);
 
-  // Search Products
+  // 5 Suggestions based on query
+  const currentQuery = (debouncedQuery || inputValue).trim().toLowerCase();
+
+  const matchingProducts = currentQuery
+    ? products.filter((product) => {
+        return (
+          product.name?.toLowerCase().includes(currentQuery) ||
+          product.category?.toLowerCase().includes(currentQuery)
+        );
+      })
+    : [];
+
+  const suggestions = matchingProducts.slice(0, 5);
+
+  // Search Products for grid
   const searchedProducts = products.filter((product) => {
-    const search = searchQuery.trim().toLowerCase();
+    const search = debouncedQuery.trim().toLowerCase();
+    if (!search) return true;
 
     return (
       product.name?.toLowerCase().includes(search) ||
@@ -121,13 +167,15 @@ export default function Collections() {
 
   // Search
   const handleSearch = (value) => {
-    setSearchQuery(value);
-    setCurrentPage(1);
+    setInputValue(value);
+    setIsDropdownOpen(Boolean(value.trim()));
   };
 
   // Clear Search
   const clearSearch = () => {
-    setSearchQuery("");
+    setInputValue("");
+    setDebouncedQuery("");
+    setIsDropdownOpen(false);
     setCurrentPage(1);
   };
 
@@ -153,7 +201,7 @@ export default function Collections() {
 
           {/* Search Bar */}
           <section className="px-5 pb-8 md:px-10 lg:px-14">
-            <div className="mx-auto max-w-[650px]">
+            <div ref={searchContainerRef} className="relative mx-auto max-w-[650px]">
               <div className="flex items-center border-b border-[#491225] py-3 transition focus-within:border-b-2">
 
                 <Search
@@ -164,13 +212,21 @@ export default function Collections() {
 
                 <input
                   type="text"
-                  value={searchQuery}
+                  value={inputValue}
                   onChange={(e) => handleSearch(e.target.value)}
+                  onFocus={() => {
+                    if (inputValue.trim()) setIsDropdownOpen(true);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Escape" || e.key === "Enter") {
+                      setIsDropdownOpen(false);
+                    }
+                  }}
                   placeholder="Search jewellery..."
                   className="w-full bg-transparent text-sm text-[#491225] outline-none placeholder:text-[#806E6D]"
                 />
 
-                {searchQuery && (
+                {inputValue && (
                   <button
                     type="button"
                     onClick={clearSearch}
@@ -183,9 +239,77 @@ export default function Collections() {
 
               </div>
 
-              {searchQuery.trim() && (
+              {/* Suggestions Dropdown (5 Suggestions) */}
+              {isDropdownOpen && inputValue.trim().length > 0 && (
+                <div className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden border border-[#491225]/20 bg-[#F5E8D5] shadow-2xl">
+                  {suggestions.length > 0 ? (
+                    <div>
+                      <div className="flex items-center justify-between border-b border-[#491225]/15 px-4 py-2 text-[10px] uppercase tracking-[2px] text-[#806E6D]">
+                        <span>Suggestions ({suggestions.length})</span>
+                        <span>{matchingProducts.length} matching</span>
+                      </div>
+
+                      <ul className="divide-y divide-[#491225]/10">
+                        {suggestions.map((item) => (
+                          <li key={item.id}>
+                            <Link
+                              to={`/product/${item.id}`}
+                              onClick={() => {
+                                setIsDropdownOpen(false);
+                                setInputValue(item.name);
+                                setDebouncedQuery(item.name);
+                              }}
+                              className="group flex items-center gap-3.5 px-4 py-3 transition duration-150 hover:bg-[#491225] hover:text-[#F5E8D5]"
+                            >
+                              <div className="h-12 w-12 shrink-0 overflow-hidden bg-white">
+                                <img
+                                  src={item.image}
+                                  alt={item.name}
+                                  className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                                />
+                              </div>
+
+                              <div className="min-w-0 flex-1">
+                                <p className="truncate font-serif text-sm text-[#491225] group-hover:text-[#F5E8D5]">
+                                  {item.name}
+                                </p>
+                                <p className="mt-0.5 text-[10px] uppercase tracking-wider text-[#806E6D] group-hover:text-[#D8C3C7]">
+                                  {item.category}
+                                </p>
+                              </div>
+
+                              <div className="shrink-0 text-right">
+                                <span className="text-xs font-semibold text-[#491225] group-hover:text-[#F5E8D5]">
+                                  {formatPrice(item.price)}
+                                </span>
+                              </div>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+
+                      {matchingProducts.length > 5 && (
+                        <button
+                          type="button"
+                          onClick={() => setIsDropdownOpen(false)}
+                          className="flex w-full items-center justify-between border-t border-[#491225]/15 bg-[#491225]/5 px-4 py-2.5 text-xs text-[#491225] transition hover:bg-[#491225] hover:text-[#F5E8D5]"
+                        >
+                          <span>See all {matchingProducts.length} results</span>
+                          <ArrowRight size={14} />
+                        </button>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="px-4 py-6 text-center text-xs text-[#806E6D]">
+                      No jewellery suggestions found for "{inputValue}"
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {debouncedQuery.trim() && (
                 <p className="mt-3 text-xs tracking-wide text-[#806E6D]">
-                  Search results for "{searchQuery}"
+                  Search results for "{debouncedQuery}"
                 </p>
               )}
             </div>
@@ -278,7 +402,7 @@ export default function Collections() {
                     Try another name or category.
                   </p>
 
-                  {(searchQuery || selectedCategory !== "all") && (
+                  {(debouncedQuery || selectedCategory !== "all") && (
                     <button
                       onClick={() => {
                         clearSearch();

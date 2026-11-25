@@ -10,6 +10,7 @@ import { addToCart } from "../../redux/cartSlice";
 import { formatPrice } from "../../data/products";
 import SiteFrame from "../../components/SiteFrame";
 import { Heart, ShoppingBag, Trash2 } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function Wishlist() {
   const dispatch = useDispatch();
@@ -20,25 +21,73 @@ export default function Wishlist() {
     error,
   } = useSelector((state) => state.wishlist);
 
-  const cartItems = useSelector((state) => state.cart.items);
+  const cartItems = useSelector(
+    (state) => state.cart.items
+  );
+
+  const cartLoading = useSelector(
+    (state) => state.cart.loading
+  );
 
   useEffect(() => {
     dispatch(fetchWishlist());
   }, [dispatch]);
 
+  // Remove product from wishlist
+  const handleRemoveWishlist = async (product) => {
+    try {
+      await dispatch(
+        removeFromWishlist(product.id)
+      ).unwrap();
+
+      toast.success("Product removed from your wishlist!");
+    } catch (error) {
+      toast.error(
+        typeof error === "string"
+          ? error
+          : "Unable to remove product from wishlist."
+      );
+    }
+  };
+
+  // Move wishlist product to cart
   const handleMoveToCart = async (product) => {
+    const cartItem = cartItems.find(
+      (item) => String(item.id) === String(product.id)
+    );
+
+    const stock = Number(product.stock || 0);
+    const currentQuantity = Number(cartItem?.quantity || 0);
+
+    if (stock <= 0) {
+      toast.error("This product is out of stock!");
+      return;
+    }
+
+    if (currentQuantity >= stock) {
+      toast.error("Maximum available stock already added!");
+      return;
+    }
+
     try {
       await dispatch(
         addToCart({
-          product,
-          quantity: 1,
+          ...product,
+          stock,
         })
       ).unwrap();
 
-      await dispatch(removeFromWishlist(product.id)).unwrap();
+      await dispatch(
+        removeFromWishlist(product.id)
+      ).unwrap();
+
+      toast.success("Product moved to your shopping bag!");
     } catch (error) {
-      // The cart or stock error is displayed below.
-      console.error(error);
+      toast.error(
+        typeof error === "string"
+          ? error
+          : "Unable to move product to your bag."
+      );
     }
   };
 
@@ -46,11 +95,16 @@ export default function Wishlist() {
     <SiteFrame>
       <main className="min-h-screen bg-[#F5E8D5] px-5 py-12 text-[#491225] md:px-12 lg:px-20">
         <div className="mx-auto max-w-6xl">
+
           <div className="mb-10 text-center">
             <p className="mb-2 text-sm uppercase tracking-[0.3em]">
               Your favourites
             </p>
-            <h1 className="font-serif text-4xl md:text-5xl">My Wishlist</h1>
+
+            <h1 className="font-serif text-4xl md:text-5xl">
+              My Wishlist
+            </h1>
+
             <p className="mt-3 text-sm text-[#806E6D]">
               Pieces you love, all in one place.
             </p>
@@ -63,16 +117,21 @@ export default function Wishlist() {
           )}
 
           {loading && items.length === 0 ? (
-            <p className="py-16 text-center">Loading your wishlist...</p>
+            <p className="py-16 text-center">
+              Loading your wishlist...
+            </p>
           ) : items.length === 0 ? (
             <div className="border border-[#491225]/20 px-6 py-16 text-center">
               <Heart className="mx-auto mb-5" size={38} />
+
               <h2 className="font-serif text-2xl">
                 Your wishlist is empty
               </h2>
+
               <p className="mt-3 text-sm text-[#806E6D]">
                 Save the pieces you love and find them here.
               </p>
+
               <Link
                 to="/collections"
                 className="mt-7 inline-block bg-[#491225] px-8 py-3 text-sm text-[#F5E8D5] transition hover:bg-[#350B19]"
@@ -82,13 +141,18 @@ export default function Wishlist() {
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+
               {items.map((product) => {
                 const cartItem = cartItems.find(
-                  (item) => String(item.id) === String(product.id)
+                  (item) =>
+                    String(item.id) === String(product.id)
                 );
 
                 const stock = Number(product.stock || 0);
-                const alreadyInCart = Number(cartItem?.quantity || 0);
+                const alreadyInCart = Number(
+                  cartItem?.quantity || 0
+                );
+
                 const outOfStock = stock <= alreadyInCart;
 
                 return (
@@ -96,6 +160,7 @@ export default function Wishlist() {
                     key={product.id}
                     className="border border-[#491225]/15 bg-[#F5E8D5]"
                   >
+
                     <div className="relative aspect-square bg-white">
                       <Link to={`/product/${product.id}`}>
                         <img
@@ -106,10 +171,9 @@ export default function Wishlist() {
                       </Link>
 
                       <button
-                        onClick={() =>
-                          dispatch(removeFromWishlist(product.id))
-                        }
-                        className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center bg-[#F5E8D5] text-[#491225] hover:bg-[#491225] hover:text-[#F5E8D5]"
+                        type="button"
+                        onClick={() => handleRemoveWishlist(product)}
+                        className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center bg-[#F5E8D5] text-[#491225] transition hover:bg-[#491225] hover:text-[#F5E8D5]"
                         aria-label="Remove from wishlist"
                       >
                         <Trash2 size={17} />
@@ -130,7 +194,9 @@ export default function Wishlist() {
 
                       <p
                         className={`mt-2 text-xs ${
-                          outOfStock ? "text-red-700" : "text-[#806E6D]"
+                          outOfStock
+                            ? "text-red-700"
+                            : "text-[#806E6D]"
                         }`}
                       >
                         {outOfStock
@@ -139,17 +205,26 @@ export default function Wishlist() {
                       </p>
 
                       <button
+                        type="button"
                         onClick={() => handleMoveToCart(product)}
-                        disabled={outOfStock || loading}
+                        disabled={
+                          outOfStock ||
+                          loading ||
+                          cartLoading
+                        }
                         className="mt-5 flex w-full items-center justify-center gap-2 bg-[#491225] px-4 py-3 text-xs tracking-wider text-[#F5E8D5] transition hover:bg-[#350B19] disabled:cursor-not-allowed disabled:opacity-40"
                       >
                         <ShoppingBag size={16} />
-                        {outOfStock ? "OUT OF STOCK" : "MOVE TO BAG"}
+
+                        {outOfStock
+                          ? "OUT OF STOCK"
+                          : "MOVE TO BAG"}
                       </button>
                     </div>
                   </article>
                 );
               })}
+
             </div>
           )}
         </div>

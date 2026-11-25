@@ -7,9 +7,12 @@ import {
   useLocation,
 } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import toast from "react-hot-toast";
+
 import { addToCart } from "../../redux/cartSlice";
 import { toggleWishlist } from "../../redux/wishlistSlice";
 import { formatPrice } from "../../data/products";
+
 import {
   ShoppingBag,
   ArrowLeft,
@@ -17,6 +20,7 @@ import {
   Minus,
   Heart,
 } from "lucide-react";
+
 import SiteFrame from "../../components/SiteFrame";
 
 const API_URL = "http://localhost:3000";
@@ -43,29 +47,42 @@ export default function ProductDetails() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
-  const [added, setAdded] = useState(false);
 
-  // Current cart quantity for this product
+  const [isAdding, setIsAdding] = useState(false);
+  const [isUpdatingWishlist, setIsUpdatingWishlist] = useState(false);
+
+  // ---------------- CART INFORMATION ----------------
+
   const cartItem = cartItems.find(
     (item) => String(item.id) === String(id)
   );
 
-  const cartQuantity = cartItem?.quantity ?? 0;
+  const cartQuantity = Number(cartItem?.quantity ?? 0);
 
-  // Latest available stock
+  // ---------------- STOCK INFORMATION ----------------
+
   const stock = Number(product?.stock ?? 0);
 
   const isOutOfStock = stock <= 0;
 
-  // Remaining quantity that can still be added
-  const remainingStock = Math.max(0, stock - cartQuantity);
+  const remainingStock = Math.max(
+    0,
+    stock - cartQuantity
+  );
+
+  const maximumReached = remainingStock === 0;
+
+  // ---------------- WISHLIST INFORMATION ----------------
 
   const isWishlisted = wishlistItems.some(
     (item) => String(item.id) === String(id)
   );
 
-  // Load latest product data from JSON Server
+  // ---------------- LOAD PRODUCT ----------------
+
   useEffect(() => {
+    let active = true;
+
     async function loadProduct() {
       try {
         setLoading(true);
@@ -75,35 +92,57 @@ export default function ProductDetails() {
         );
 
         if (!response.ok) {
-          throw new Error("Product not found");
+          throw new Error("Product not found.");
         }
 
         const data = await response.json();
 
-        setProduct(data);
-        setQuantity(1);
-        setAdded(false);
+        if (active) {
+          setProduct(data);
+          setQuantity(1);
+        }
       } catch (error) {
         console.error("Unable to load product:", error);
-        setProduct(null);
+
+        if (active) {
+          setProduct(null);
+        }
       } finally {
-        setLoading(false);
+        if (active) {
+          setLoading(false);
+        }
       }
     }
 
     loadProduct();
 
-    // Refresh product stock when returning to the page
+    // Refresh stock when the user returns to the page.
     window.addEventListener("focus", loadProduct);
 
     return () => {
+      active = false;
       window.removeEventListener("focus", loadProduct);
     };
   }, [id]);
 
-  // Redirect to Login
+  // Keep quantity within the available stock.
+  useEffect(() => {
+    setQuantity((previous) => {
+      if (remainingStock <= 0) return 1;
+
+      return Math.min(
+        Math.max(1, previous),
+        remainingStock
+      );
+    });
+  }, [remainingStock]);
+
+  // ---------------- LOGIN CHECK ----------------
+
   const checkLogin = () => {
     if (!isLoggedIn) {
+      toast.error("Please log in first.");
+
       navigate("/login", {
         state: {
           from: location,
@@ -117,37 +156,94 @@ export default function ProductDetails() {
     return true;
   };
 
-  // Add product to cart
-  const handleAddToCart = () => {
-    if (!product || isOutOfStock) return;
+  // ---------------- ADD TO CART ----------------
 
-    if (!checkLogin()) return;
-
-    if (quantity > remainingStock) {
-      setAdded(false);
-      return;
-    }
-
-    for (let i = 0; i < quantity; i++) {
-      dispatch(
-        addToCart({
-          ...product,
-          stock,
-        })
-      );
-    }
-
-    setAdded(true);
-  };
-
-  // Toggle Wishlist
-  const handleWishlist = () => {
+  const handleAddToCart = async () => {
     if (!product) return;
 
     if (!checkLogin()) return;
 
-    dispatch(toggleWishlist(product));
+    if (isAdding) return;
+
+    if (isOutOfStock) {
+      toast.error("This product is out of stock.");
+      return;
+    }
+
+    if (remainingStock <= 0) {
+      toast.error("Maximum stock reached.");
+      return;
+    }
+
+    if (quantity > remainingStock) {
+      toast.error(
+        `Only ${remainingStock} unit(s) available to add.`
+      );
+      return;
+    }
+
+    setIsAdding(true);
+
+    try {
+      await dispatch(
+        addToCart({
+          product: {
+            ...product,
+            stock,
+          },
+          quantity,
+        })
+      ).unwrap();
+
+      toast.success("Product added to your cart!");
+
+    } catch (error) {
+      toast.error(
+        typeof error === "string"
+          ? error
+          : error?.message || "Unable to add product to cart."
+      );
+    } finally {
+      setIsAdding(false);
+    }
   };
+
+  // ---------------- TOGGLE WISHLIST ----------------
+
+  const handleWishlist = async () => {
+    if (!product) return;
+
+    if (!checkLogin()) return;
+
+    if (isUpdatingWishlist) return;
+
+    setIsUpdatingWishlist(true);
+
+    try {
+      const wasWishlisted = isWishlisted;
+
+      await dispatch(
+        toggleWishlist(product)
+      ).unwrap();
+
+      if (wasWishlisted) {
+        toast.success("Removed from wishlist!");
+      } else {
+        toast.success("Added to wishlist!");
+      }
+
+    } catch (error) {
+      toast.error(
+        typeof error === "string"
+          ? error
+          : error?.message || "Unable to update wishlist."
+      );
+    } finally {
+      setIsUpdatingWishlist(false);
+    }
+  };
+
+  // ---------------- LOADING ----------------
 
   if (loading) {
     return (
@@ -162,6 +258,8 @@ export default function ProductDetails() {
       </main>
     );
   }
+
+  // ---------------- PRODUCT NOT FOUND ----------------
 
   if (!product) {
     return (
@@ -184,12 +282,15 @@ export default function ProductDetails() {
     );
   }
 
+  // ---------------- PRODUCT DETAILS ----------------
+
   return (
     <main className="w-full bg-[#491225]">
       <SiteFrame>
         <div className="min-h-screen bg-[#F5E8D5] text-[#491225]">
 
           {/* Back Navigation */}
+
           <section className="px-5 pt-10 md:px-10 lg:px-14">
             <div className="mx-auto max-w-[1200px]">
               <Link
@@ -203,10 +304,12 @@ export default function ProductDetails() {
           </section>
 
           {/* Product Details */}
+
           <section className="px-5 py-10 md:px-10 md:py-16 lg:px-14">
             <div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-10 md:grid-cols-2 md:gap-16">
 
               {/* Product Image */}
+
               <div className="overflow-hidden bg-[#F5E8D5]">
                 <img
                   src={product.image}
@@ -215,9 +318,14 @@ export default function ProductDetails() {
                     isOutOfStock ? "opacity-50" : ""
                   }`}
                 />
+
+                {isOutOfStock && (
+                  <div className="absolute" />
+                )}
               </div>
 
               {/* Product Information */}
+
               <div className="flex flex-col justify-center py-2">
 
                 <p className="text-[10px] uppercase tracking-[4px] text-[#806E6D]">
@@ -233,6 +341,7 @@ export default function ProductDetails() {
                 </p>
 
                 {/* Stock Status */}
+
                 <div className="mt-5">
                   {isOutOfStock ? (
                     <p className="inline-block bg-red-100 px-4 py-2 text-xs font-semibold uppercase tracking-[2px] text-red-700">
@@ -251,11 +360,13 @@ export default function ProductDetails() {
                 <div className="my-7 h-px w-full bg-[#491225]/20" />
 
                 {/* Description */}
+
                 <p className="text-sm leading-8 text-[#72515A]">
                   {product.description}
                 </p>
 
                 {/* Category */}
+
                 <div className="mt-6">
                   <p className="text-[10px] uppercase tracking-[2px] text-[#806E6D]">
                     Category
@@ -267,6 +378,7 @@ export default function ProductDetails() {
                 </div>
 
                 {/* Quantity */}
+
                 {!isOutOfStock && (
                   <div className="mt-8">
                     <p className="mb-3 text-[10px] uppercase tracking-[2px]">
@@ -274,11 +386,12 @@ export default function ProductDetails() {
                     </p>
 
                     <div className="flex w-fit items-center border border-[#491225]">
+
                       <button
                         type="button"
                         onClick={() =>
-                          setQuantity((prev) =>
-                            Math.max(1, prev - 1)
+                          setQuantity((previous) =>
+                            Math.max(1, previous - 1)
                           )
                         }
                         disabled={quantity <= 1}
@@ -295,19 +408,26 @@ export default function ProductDetails() {
                       <button
                         type="button"
                         onClick={() =>
-                          setQuantity((prev) =>
-                            Math.min(remainingStock, prev + 1)
+                          setQuantity((previous) =>
+                            Math.min(
+                              remainingStock,
+                              previous + 1
+                            )
                           )
                         }
-                        disabled={quantity >= remainingStock}
+                        disabled={
+                          quantity >= remainingStock ||
+                          remainingStock === 0
+                        }
                         className="flex h-11 w-11 items-center justify-center transition hover:bg-[#491225] hover:text-[#F5E8D5] disabled:opacity-30"
                         aria-label="Increase quantity"
                       >
                         <Plus size={15} />
                       </button>
+
                     </div>
 
-                    {remainingStock === 0 && (
+                    {maximumReached && (
                       <p className="mt-3 text-xs text-amber-800">
                         You have already added all available stock to your bag.
                       </p>
@@ -316,13 +436,14 @@ export default function ProductDetails() {
                 )}
 
                 {/* Add to Cart */}
+
                 <button
                   type="button"
                   onClick={handleAddToCart}
                   disabled={
                     isOutOfStock ||
                     remainingStock === 0 ||
-                    quantity > remainingStock
+                    isAdding
                   }
                   className="mt-7 flex w-full items-center justify-center gap-3 bg-[#491225] px-6 py-4 text-xs uppercase tracking-[2px] text-[#F5E8D5] transition hover:bg-[#350B19] disabled:cursor-not-allowed disabled:bg-[#806E6D]"
                 >
@@ -330,18 +451,22 @@ export default function ProductDetails() {
 
                   {isOutOfStock
                     ? "Out of Stock"
-                    : remainingStock === 0
-                      ? "Maximum Quantity in Bag"
-                      : `Add to Bag — ${formatPrice(
-                          product.price * quantity
-                        )}`}
+                    : isAdding
+                      ? "Adding to Bag..."
+                      : remainingStock === 0
+                        ? "Maximum Quantity in Bag"
+                        : `Add to Bag — ${formatPrice(
+                            product.price * quantity
+                          )}`}
                 </button>
 
                 {/* Wishlist Button */}
+
                 <button
                   type="button"
                   onClick={handleWishlist}
-                  className={`mt-3 flex w-full items-center justify-center gap-3 border px-6 py-4 text-xs uppercase tracking-[2px] transition ${
+                  disabled={isUpdatingWishlist}
+                  className={`mt-3 flex w-full items-center justify-center gap-3 border px-6 py-4 text-xs uppercase tracking-[2px] transition disabled:cursor-not-allowed disabled:opacity-60 ${
                     isWishlisted
                       ? "border-[#491225] bg-[#491225] text-[#F5E8D5]"
                       : "border-[#491225] bg-transparent text-[#491225] hover:bg-[#491225] hover:text-[#F5E8D5]"
@@ -349,22 +474,22 @@ export default function ProductDetails() {
                 >
                   <Heart
                     size={17}
-                    fill={isWishlisted ? "currentColor" : "none"}
+                    fill={
+                      isWishlisted
+                        ? "currentColor"
+                        : "none"
+                    }
                   />
 
-                  {isWishlisted
-                    ? "Remove from Wishlist"
-                    : "Add to Wishlist"}
+                  {isUpdatingWishlist
+                    ? "Updating..."
+                    : isWishlisted
+                      ? "Remove from Wishlist"
+                      : "Add to Wishlist"}
                 </button>
 
-                {/* Added Message */}
-                {added && (
-                  <p className="mt-4 text-center text-sm text-[#72515A]">
-                    Added to your bag successfully.
-                  </p>
-                )}
+                {/* Wishlist Information */}
 
-                {/* Wishlist Message */}
                 {isWishlisted && (
                   <p className="mt-3 text-center text-sm text-[#72515A]">
                     This piece is saved in your wishlist.
@@ -372,6 +497,7 @@ export default function ProductDetails() {
                 )}
 
                 {/* Continue Shopping */}
+
                 <Link
                   to="/collections"
                   className="mt-5 block text-center text-xs tracking-[1px] underline underline-offset-4 transition hover:opacity-60"

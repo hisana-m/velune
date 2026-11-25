@@ -79,22 +79,27 @@ export const clearWishlist = createAsyncThunk(
 
 const wishlistSlice = createSlice({
   name: "wishlist",
+
   initialState: {
     items: [],
     loading: false,
     error: null,
   },
+
   reducers: {},
+
   extraReducers: (builder) => {
     builder
       .addCase(fetchWishlist.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
+
       .addCase(fetchWishlist.fulfilled, (state, action) => {
         state.loading = false;
         state.items = action.payload;
       })
+
       .addCase(fetchWishlist.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
@@ -104,25 +109,29 @@ const wishlistSlice = createSlice({
         state.items = action.payload;
         state.error = null;
       })
+
       .addCase(toggleWishlist.rejected, (state, action) => {
         state.error = action.payload || action.error.message;
       })
 
       .addCase(removeFromWishlist.fulfilled, (state, action) => {
         state.items = action.payload;
+        state.error = null;
       })
+
       .addCase(removeFromWishlist.rejected, (state, action) => {
         state.error = action.payload || action.error.message;
       })
 
       .addCase(clearWishlist.fulfilled, (state, action) => {
         state.items = action.payload;
+        state.error = null;
       })
+
       .addCase(clearWishlist.rejected, (state, action) => {
         state.error = action.payload || action.error.message;
       })
 
-      // Clear previous user's wishlist from Redux on logout.
       .addCase(logout, (state) => {
         state.items = [];
         state.loading = false;

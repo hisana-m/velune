@@ -36,7 +36,7 @@
       "image": "/images/earing1.jpg",
       "description": "An elegant jewellery design.",
       "isBestSeller": false,
-      "stock": 5
+      "stock": 4
     },
     {
       "id": "2",
@@ -48,7 +48,7 @@
       "image": "/images/ring2.jpg",
       "description": "An elegant ring design.",
       "isBestSeller": true,
-      "stock": 5
+      "stock": 0
     },
     {
       "id": "3",
@@ -60,7 +60,7 @@
       "image": "/images/bracelet1.jpg",
       "description": "An elegant bracelet design.",
       "isBestSeller": true,
-      "stock": 5
+      "stock": 2
     },
     {
       "id": "4",
@@ -96,7 +96,7 @@
       "image": "/images/earing3.jpg",
       "description": "An elegant necklace design.",
       "isBestSeller": true,
-      "stock": 5
+      "stock": 3
     },
     {
       "id": "7",
@@ -108,7 +108,7 @@
       "image": "/images/ring3.jpg",
       "description": "An elegant necklace design.",
       "isBestSeller": false,
-      "stock": 5
+      "stock": 4
     },
     {
       "id": "8",
@@ -156,7 +156,7 @@
       "image": "/images/ring1.jpg",
       "description": "An elegant necklace design.",
       "isBestSeller": false,
-      "stock": 5
+      "stock": 4
     },
     {
       "id": "12",
@@ -492,7 +492,7 @@
       "image": "/images/ring9.jpg",
       "description": "An elegant necklace design.",
       "isBestSeller": false,
-      "stock": 5
+      "stock": 4
     },
     {
       "id": "40",
@@ -525,261 +525,81 @@
       "name": "hisana",
       "email": "hey.hisana@gmail.com",
       "password": "12345678",
-      "id": "7Xc1fwhSaME"
+      "id": "7Xc1fwhSaME",
+      "isBlocked": false
+    },
+    {
+      "name": "minha",
+      "email": "minha@gmail.com",
+      "password": "12345678",
+      "id": "c6mLOYtvTL0"
+    },
+    {
+      "name": "hiba",
+      "email": "hiba@gmail.com",
+      "password": "12345678",
+      "id": "r-X2xFdOtw8"
+    },
+    {
+      "name": "hisanaa",
+      "email": "hisana@gmail.com",
+      "password": "12345678",
+      "id": "NCHCylk4-2g"
+    },
+    {
+      "name": "admin",
+      "email": "admin@gmail.com",
+      "password": "11111111",
+      "id": "k9uO4LHTKTo",
+      "role": "admin",
+      "isBlocked": false
     }
   ],
   "orders": [
     {
+      "userId": "7Xc1fwhSaME",
       "customer": {
-        "name": "gtehge4t",
-        "email": "tgeg@rf.com",
-        "phone": "tgehgt",
-        "address": "tehdw",
-        "city": "trghe",
-        "country": "htewhew"
+        "name": "hisana",
+        "email": "hey.hisana@gmail.com",
+        "phone": "fdb",
+        "address": "adfsb",
+        "city": "dbf",
+        "country": "bfd"
       },
       "products": [
         {
-          "id": "3",
-          "name": "Pearl Gold Cuff Bracelet",
-          "price": 4300,
-          "currency": "AED",
-          "category": "bracelet",
-          "categorySlug": "bracelets",
-          "image": "/images/bracelet1.jpg",
-          "description": "An elegant bracelet design.",
-          "isBestSeller": true,
-          "quantity": 1
-        },
-        {
-          "id": "30",
-          "name": "Golden Pearl Drop Earrings",
-          "price": 2100,
+          "id": "1",
+          "name": "Filigree Gold Drop Earrings",
+          "price": 2900,
           "currency": "AED",
           "category": "earrings",
           "categorySlug": "earrings",
-          "image": "/images/earing7.jpg",
-          "description": "An elegant necklace design.",
-          "isBestSeller": true,
-          "quantity": 1
-        },
-        {
-          "id": "10",
-          "name": "Pearl Cascade Necklace",
-          "price": 3200,
-          "currency": "AED",
-          "category": "necklace",
-          "categorySlug": "necklaces",
-          "image": "/images/necklace1.jpg",
-          "description": "An elegant necklace design.",
+          "image": "/images/earing1.jpg",
+          "description": "An elegant jewellery design.",
           "isBestSeller": false,
+          "stock": 4,
+          "cartId": "sRQ7Lv8iBak",
           "quantity": 1
         }
       ],
       "paymentMethod": "Cash on Delivery",
-      "subtotal": 9600,
+      "subtotal": 2900,
       "shipping": 0,
-      "total": 9600,
+      "total": 2900,
       "status": "Pending",
       "paymentStatus": "Pending",
-      "createdAt": "2026-11-18T06:16:45.814Z",
-      "id": "XKjgJKWv6VE"
+      "createdAt": "2026-11-20T11:05:57.735Z",
+      "id": "_sVsC2KJpGY"
     },
     {
+      "userId": "NCHCylk4-2g",
       "customer": {
-        "name": "Hisana",
-        "email": "hey.hisana@gmail.com",
-        "phone": "cefre",
-        "address": "2we",
-        "city": "cfre",
-        "country": "dewfd"
-      },
-      "products": [
-        {
-          "id": "18",
-          "name": "Blue Sapphire Station Bracelet",
-          "price": 3050,
-          "currency": "AED",
-          "category": "bracelet",
-          "categorySlug": "bracelets",
-          "image": "/images/bracelet4.jpg",
-          "description": "An elegant necklace design.",
-          "isBestSeller": true,
-          "quantity": 1
-        }
-      ],
-      "paymentMethod": "Online Payment",
-      "subtotal": 3050,
-      "shipping": 0,
-      "total": 3050,
-      "status": "Pending",
-      "paymentStatus": "Awaiting Online Payment",
-      "createdAt": "2026-11-18T06:17:39.813Z",
-      "id": "AQBO8HN5u-c"
-    },
-    {
-      "customer": {
-        "name": "dgdg",
-        "email": "hey.hisana@gmail.com",
-        "phone": "cefre",
-        "address": "uyg",
-        "city": "cfre",
-        "country": "ji"
-      },
-      "products": [
-        {
-          "id": "5",
-          "name": "Diamond Y Necklace",
-          "price": 3200,
-          "currency": "AED",
-          "category": "necklace",
-          "categorySlug": "necklaces",
-          "image": "/images/necklace3.jpg",
-          "description": "An elegant necklace design.",
-          "isBestSeller": true,
-          "quantity": 2
-        },
-        {
-          "id": "2",
-          "name": "Ruby Elegance Ring",
-          "price": 5350,
-          "currency": "AED",
-          "category": "ring",
-          "categorySlug": "rings",
-          "image": "/images/ring2.jpg",
-          "description": "An elegant ring design.",
-          "isBestSeller": true,
-          "quantity": 1
-        },
-        {
-          "id": "4",
-          "name": "Seashell Pendant Necklace",
-          "price": 2750,
-          "currency": "AED",
-          "category": "necklace",
-          "categorySlug": "necklaces",
-          "image": "/images/necklace2.jpg",
-          "description": "An elegant necklace design.",
-          "isBestSeller": false,
-          "quantity": 3
-        }
-      ],
-      "paymentMethod": "Cash on Delivery",
-      "subtotal": 20000,
-      "shipping": 0,
-      "total": 20000,
-      "status": "Pending",
-      "paymentStatus": "Pending",
-      "createdAt": "2026-11-18T10:00:29.667Z",
-      "id": "sBQsXdTYncQ"
-    },
-    {
-      "customer": {
-        "name": "Hisana",
-        "email": "hey.hisana@gmail.com",
-        "phone": "cefre",
-        "address": " ntyr",
-        "city": "ghede",
-        "country": "yur"
-      },
-      "products": [
-        {
-          "id": "3",
-          "name": "Pearl Gold Cuff Bracelet",
-          "price": 4300,
-          "currency": "AED",
-          "category": "bracelet",
-          "categorySlug": "bracelets",
-          "image": "/images/bracelet1.jpg",
-          "description": "An elegant bracelet design.",
-          "isBestSeller": true,
-          "stock": 5,
-          "quantity": 5
-        }
-      ],
-      "paymentMethod": "Cash on Delivery",
-      "subtotal": 21500,
-      "shipping": 0,
-      "total": 21500,
-      "status": "Pending",
-      "paymentStatus": "Pending",
-      "createdAt": "2026-11-19T05:55:28.318Z",
-      "id": "9yAfEEvklSA"
-    },
-    {
-      "customer": {
-        "name": "Hisana",
-        "email": "hey.hisana@gmail.com",
-        "phone": "cefre",
-        "address": "cghgjhkj",
-        "city": "fg",
-        "country": "fgh"
-      },
-      "products": [
-        {
-          "id": "3",
-          "name": "Pearl Gold Cuff Bracelet",
-          "price": 4300,
-          "currency": "AED",
-          "category": "bracelet",
-          "categorySlug": "bracelets",
-          "image": "/images/bracelet1.jpg",
-          "description": "An elegant bracelet design.",
-          "isBestSeller": true,
-          "stock": 5,
-          "quantity": 5
-        }
-      ],
-      "paymentMethod": "Online Payment",
-      "subtotal": 21500,
-      "shipping": 0,
-      "total": 21500,
-      "status": "Pending",
-      "paymentStatus": "Awaiting Online Payment",
-      "createdAt": "2026-11-19T05:56:21.432Z",
-      "id": "0JFuzSuwDw8"
-    },
-    {
-      "customer": {
-        "name": "Hisana",
-        "email": "hey.hisana@gmail.com",
-        "phone": "cefre",
-        "address": "nn,mbuihj ",
-        "city": "uhij",
-        "country": "bjn"
-      },
-      "products": [
-        {
-          "id": "3",
-          "name": "Pearl Gold Cuff Bracelet",
-          "price": 4300,
-          "currency": "AED",
-          "category": "bracelet",
-          "categorySlug": "bracelets",
-          "image": "/images/bracelet1.jpg",
-          "description": "An elegant bracelet design.",
-          "isBestSeller": true,
-          "stock": 0,
-          "quantity": 5
-        }
-      ],
-      "paymentMethod": "Cash on Delivery",
-      "subtotal": 21500,
-      "shipping": 0,
-      "total": 21500,
-      "status": "Pending",
-      "paymentStatus": "Pending",
-      "createdAt": "2026-11-19T06:12:31.931Z",
-      "id": "w3KpcJyBN5Y"
-    },
-    {
-      "customer": {
-        "name": "Hisana",
-        "email": "hey.hisana@gmail.com",
-        "phone": "cefre",
-        "address": "nbvc",
-        "city": "cfre",
-        "country": "dfrghj"
+        "name": "hisanaa",
+        "email": "hisana@gmail.com",
+        "phone": "vfv",
+        "address": "afvdv",
+        "city": "bgdb",
+        "country": "vfs"
       },
       "products": [
         {
@@ -793,59 +613,42 @@
           "description": "An elegant ring design.",
           "isBestSeller": true,
           "stock": 0,
-          "quantity": 5
-        }
-      ],
-      "paymentMethod": "Cash on Delivery",
-      "subtotal": 26750,
-      "shipping": 0,
-      "total": 26750,
-      "status": "Pending",
-      "paymentStatus": "Pending",
-      "createdAt": "2026-11-19T06:28:07.034Z",
-      "id": "413TTq_Xiww"
-    },
-    {
-      "customer": {
-        "name": "Hisana",
-        "email": "hey.hisana@gmail.com",
-        "phone": "cefre",
-        "address": "gcf",
-        "city": "trghe",
-        "country": "hgh"
-      },
-      "products": [
+          "cartId": "m_jM-UvuDBU",
+          "quantity": 1
+        },
         {
-          "id": "4",
-          "name": "Seashell Pendant Necklace",
-          "price": 2750,
+          "id": "7",
+          "name": "Emerald Solitaire Ring",
+          "price": 3550,
           "currency": "AED",
-          "category": "necklace",
-          "categorySlug": "necklaces",
-          "image": "/images/necklace2.jpg",
+          "category": "ring",
+          "categorySlug": "rings",
+          "image": "/images/ring3.jpg",
           "description": "An elegant necklace design.",
           "isBestSeller": false,
-          "stock": 0,
-          "quantity": 5
+          "stock": 4,
+          "cartId": "QnWAZVTTU1E",
+          "quantity": 1
         }
       ],
       "paymentMethod": "Cash on Delivery",
-      "subtotal": 13750,
+      "subtotal": 8900,
       "shipping": 0,
-      "total": 13750,
-      "status": "Pending",
+      "total": 8900,
+      "status": "Shipped",
       "paymentStatus": "Pending",
-      "createdAt": "2026-11-19T06:31:24.200Z",
-      "id": "6RoxhL0tytI"
+      "createdAt": "2026-11-20T12:02:01.737Z",
+      "id": "DwVQXTLQ6Ws"
     }
   ],
-  "cart": [],
-  "wishlist": [
+  "cart": [
     {
       "userId": "7Xc1fwhSaME",
-      "productId": "3",
-      "id": "b6NUUykonyk"
+      "productId": "6",
+      "quantity": 1,
+      "id": "rqVz2RIhTMA"
     }
   ],
+  "wishlist": [],
   "$schema": "./node_modules/json-server/schema.json"
 }

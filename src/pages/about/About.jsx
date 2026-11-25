@@ -86,13 +86,6 @@ export default function About() {
           <section className="px-6 md:px-14 lg:px-24 pb-28 md:pb-40">
             <div className="max-w-7xl mx-auto grid md:grid-cols-12 gap-10 md:gap-12 items-center">
 
-              <div className="md:col-span-7">
-                <img
-                  src="/images/about-jwellery.jpg"
-                  alt="Elegant gold and diamond jewellery"
-                  className="w-full h-[420px] md:h-[680px] object-cover"
-                />
-              </div>
 
               <div className="md:col-span-5 md:pl-8 lg:pl-12">
                 <p className="text-[10px] tracking-[4px] uppercase text-[#8B7276] mb-8">
@@ -112,6 +105,7 @@ export default function About() {
                   Our collections bring together the warm glow of gold
                   and the captivating sparkle of diamonds.
                 </p>
+                
 
                 <p className="text-sm leading-8 text-[#72515A] mb-10">
                   From everyday elegance to life's most memorable
@@ -119,6 +113,7 @@ export default function About() {
                   your personal style and remain beautiful beyond
                   passing trends.
                 </p>
+                
 
                 <Link
                   to="/collections"
@@ -126,6 +121,17 @@ export default function About() {
                 >
                   Explore Jewellery
                 </Link>
+
+
+              </div>
+
+
+              <div className="md:col-span-7">
+                <img
+                  src="/images/about-jwellery.jpg"
+                  alt="Elegant gold and diamond jewellery"
+                  className="w-full h-[420px] md:h-[680px] object-cover"
+                />
               </div>
             </div>
           </section>

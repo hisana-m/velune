@@ -1,12 +1,10 @@
 
 import { useEffect, useState } from "react";
-import {
-  Link,
-  useNavigate,
-  useLocation,
-} from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Heart, ShoppingBag } from "lucide-react";
+import toast from "react-hot-toast";
+
 import { addToCart } from "../../redux/cartSlice";
 import { toggleWishlist } from "../../redux/wishlistSlice";
 import { formatPrice } from "../../data/products";
@@ -18,28 +16,27 @@ export default function ProductCard({ product }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [stock, setStock] = useState(
-    Number(product.stock ?? 0)
-  );
-
+  const user = useSelector((state) => state.auth.user);
   const wishlistItems = useSelector(
-    (state) => state.wishlist.items
+    (state) => state.wishlist.items || []
   );
-
   const cartItems = useSelector(
-    (state) => state.cart.items
+    (state) => state.cart.items || []
   );
 
-  const isLoggedIn = useSelector(
-    (state) => state.auth.isLoggedIn
-  );
+  const [stock, setStock] = useState(Number(product.stock) || 0);
+  const [stockLoading, setStockLoading] = useState(true);
+  const [isAdding, setIsAdding] = useState(false);
+  const [isWishlistLoading, setIsWishlistLoading] = useState(false);
 
-  // Fetch the latest stock from JSON Server
+  // Fetch latest stock from JSON Server
   useEffect(() => {
-    const loadStock = async () => {
+    let isMounted = true;
+
+    async function fetchStock() {
       try {
         const response = await fetch(
-          `${API_URL}/products/${encodeURIComponent(product.id)}`
+          `${API_URL}/products/${product.id}`
         );
 
         if (!response.ok) {
@@ -48,42 +45,49 @@ export default function ProductCard({ product }) {
 
         const latestProduct = await response.json();
 
-        setStock(Number(latestProduct.stock ?? 0));
+        if (isMounted) {
+          setStock(Number(latestProduct.stock) || 0);
+        }
       } catch (error) {
-        console.error("Stock loading error:", error);
+        console.error("Stock fetching error:", error);
+      } finally {
+        if (isMounted) {
+          setStockLoading(false);
+        }
       }
-    };
+    }
 
-    loadStock();
-
-    // Refresh stock when the user returns to this page
-    window.addEventListener("focus", loadStock);
+    fetchStock();
 
     return () => {
-      window.removeEventListener("focus", loadStock);
+      isMounted = false;
     };
   }, [product.id]);
 
+  // Check wishlist status
   const isWishlisted = wishlistItems.some(
-    (item) => String(item.id) === String(product.id)
+    (item) =>
+      String(item.productId ?? item.id) === String(product.id)
   );
 
+  // Find product in cart
   const cartItem = cartItems.find(
-    (item) => String(item.id) === String(product.id)
+    (item) =>
+      String(item.productId ?? item.id) === String(product.id)
   );
 
-  const cartQuantity = cartItem?.quantity ?? 0;
+  const cartQuantity = Number(cartItem?.quantity) || 0;
 
-  const isOutOfStock = stock <= 0;
+  const isOutOfStock = !stockLoading && stock <= 0;
   const maximumReached = cartQuantity >= stock;
 
+  // Login check
   const checkLogin = () => {
-    if (!isLoggedIn) {
+    if (!user) {
+      toast.error("Please log in to continue.");
+
       navigate("/login", {
-        state: {
-          from: location,
-          message: "Please login to continue shopping.",
-        },
+        state: { from: location },
       });
 
       return false;
@@ -92,107 +96,147 @@ export default function ProductCard({ product }) {
     return true;
   };
 
-  // Wishlist
-  const handleWishlist = () => {
+  // Add or remove wishlist
+  const handleWishlist = async () => {
     if (!checkLogin()) return;
+    if (isWishlistLoading) return;
 
-    dispatch(toggleWishlist(product));
+    try {
+      setIsWishlistLoading(true);
+
+      await dispatch(toggleWishlist(product)).unwrap();
+
+      toast.success(
+        isWishlisted
+          ? "Removed from wishlist"
+          : "Added to wishlist"
+      );
+    } catch (error) {
+      toast.error(
+        typeof error === "string"
+          ? error
+          : "Unable to update wishlist"
+      );
+    } finally {
+      setIsWishlistLoading(false);
+    }
   };
 
-  // Add to Bag
-  const handleAddToCart = () => {
+  // Add product to cart
+  const handleAddToCart = async () => {
     if (!checkLogin()) return;
+    if (isAdding || stockLoading) return;
 
-    if (isOutOfStock || maximumReached) return;
+    if (stock <= 0) {
+      toast.error("This product is out of stock.");
+      return;
+    }
 
-    dispatch(
-      addToCart({
-        ...product,
-        stock,
-      })
-    );
+    if (cartQuantity >= stock) {
+      toast.error("You have reached the available stock limit.");
+      return;
+    }
+
+    try {
+      setIsAdding(true);
+
+      await dispatch(
+        addToCart({
+          ...product,
+          stock,
+        })
+      ).unwrap();
+
+      toast.success("Added to bag successfully");
+    } catch (error) {
+      toast.error(
+        typeof error === "string"
+          ? error
+          : "Unable to add product to bag"
+      );
+    } finally {
+      setIsAdding(false);
+    }
   };
 
   return (
-    <article className="group w-full min-w-0">
-      {/* Product Image */}
-      <div className="relative aspect-square overflow-hidden bg-[#F5E8D5]">
+    <div className="group w-full">
+      {/* PRODUCT IMAGE */}
+      <div className="relative aspect-square w-full overflow-hidden bg-[#F5E8D5]">
 
-        <Link
-          to={`/product/${product.id}`}
-          className="block h-full w-full"
-        >
+        <Link to={`/product/${product.id}`}>
           <img
             src={product.image}
             alt={product.name}
-            loading="lazy"
-            className={`h-full w-full object-cover transition-transform duration-700 group-hover:scale-105 ${
-              isOutOfStock ? "opacity-50" : ""
+            className={`h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 ${
+              isOutOfStock ? "opacity-60" : ""
             }`}
           />
         </Link>
 
-        {/* Out of Stock Label */}
-        {isOutOfStock && (
-          <div className="absolute inset-0 flex items-center justify-center bg-[#491225]/35">
-            <span className="bg-[#491225] px-5 py-3 text-xs tracking-[2px] text-[#F5E8D5]">
-              OUT OF STOCK
-            </span>
-          </div>
-        )}
-
-        {/* Wishlist Button */}
+        {/* WISHLIST BUTTON */}
         <button
           type="button"
           onClick={handleWishlist}
+          disabled={isWishlistLoading}
           aria-label={
             isWishlisted
               ? "Remove from wishlist"
               : "Add to wishlist"
           }
-          aria-pressed={isWishlisted}
-          className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#FEF7F2] text-[#491225] transition hover:bg-[#491225] hover:text-[#F5E8D5]"
+          className="absolute right-4 top-4 z-30 flex h-10 w-10 items-center justify-center rounded-full bg-[#FEF7F2] text-[#491225] transition-all duration-300 hover:bg-[#491225] hover:text-[#FEF7F2] disabled:opacity-50"
         >
           <Heart
             size={19}
             strokeWidth={1.5}
-            fill={isWishlisted ? "#491225" : "none"}
+            fill={isWishlisted ? "currentColor" : "none"}
           />
         </button>
 
-        {/* Add to Bag */}
+        {/* OUT OF STOCK - SLIDES UP ON HOVER */}
+        {isOutOfStock && (
+          <div className="absolute bottom-0 left-0 z-20 flex w-full translate-y-full items-center justify-center bg-[#491225] py-4 text-xs uppercase tracking-[0.2em] text-[#F5E8D5] transition-transform duration-300 group-hover:translate-y-0">
+            Out of Stock
+          </div>
+        )}
+
+        {/* ADD TO BAG - SLIDES UP ON HOVER */}
         {!isOutOfStock && (
           <button
             type="button"
             onClick={handleAddToCart}
-            disabled={maximumReached}
-            className="absolute bottom-0 left-0 flex w-full translate-y-full items-center justify-center gap-2 bg-[#491225] py-4 text-sm text-[#F5E8D5] transition-transform duration-300 group-hover:translate-y-0 disabled:cursor-not-allowed disabled:opacity-70"
+            disabled={
+              stockLoading ||
+              isAdding ||
+              maximumReached
+            }
+            className="absolute bottom-0 left-0 z-20 flex w-full translate-y-full items-center justify-center gap-2 bg-[#491225] py-4 text-xs uppercase tracking-[0.2em] text-[#FEF7F2] transition-all duration-300 hover:bg-[#350B19] group-hover:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            <ShoppingBag size={17} strokeWidth={1.5} />
-            {maximumReached ? "Maximum in Bag" : "Add to Bag"}
-          </button>
-        )}
+            <ShoppingBag size={16} strokeWidth={1.5} />
 
-        {isOutOfStock && (
-          <div className="absolute bottom-0 left-0 w-full bg-[#491225] py-4 text-center text-sm text-[#F5E8D5]">
-            Out of Stock
-          </div>
+            {stockLoading
+              ? "Checking Stock..."
+              : isAdding
+                ? "Adding..."
+                : maximumReached
+                  ? "Maximum Reached"
+                  : "Add to Bag"}
+          </button>
         )}
       </div>
 
-      {/* Product Name and Price */}
-      <Link
-        to={`/product/${product.id}`}
-        className="block bg-transparent px-2 py-4 text-center transition-opacity hover:opacity-70"
-      >
-        <h3 className="font-serif text-base font-medium text-[#491225] md:text-lg">
-          {product.name}
-        </h3>
+      {/* PRODUCT DETAILS */}
+      <div className="px-2 pt-4 text-center">
+        <Link to={`/product/${product.id}`}>
+          <h3 className="text-sm font-medium tracking-wide text-[#491225] transition-colors duration-300 md:text-base">
+            {product.name}
+          </h3>
+        </Link>
 
-        <p className="mt-2 text-sm font-medium text-[#491225]">
+        <p className="mt-2 text-sm tracking-wide text-[#491225]">
           {formatPrice(product.price)}
         </p>
-      </Link>
-    </article>
+      </div>
+    </div>
   );
 }

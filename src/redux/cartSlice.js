@@ -1,5 +1,6 @@
-import { logout } from "./authSlice";
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { logout } from "./authSlice";
 
 import {
   getUserCart,
@@ -38,8 +39,6 @@ export const addToCart = createAsyncThunk(
         return rejectWithValue("Please log in first.");
       }
 
-      // Supports both addToCart(product) and
-      // addToCart({ product, quantity })
       const product = payload.product || payload;
       const quantity = Number(payload.quantity) || 1;
 
@@ -118,22 +117,27 @@ export const clearCart = createAsyncThunk(
 
 const cartSlice = createSlice({
   name: "cart",
+
   initialState: {
     items: [],
     loading: false,
     error: null,
   },
+
   reducers: {},
+
   extraReducers: (builder) => {
     builder
       .addCase(fetchCart.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
+
       .addCase(fetchCart.fulfilled, (state, action) => {
         state.loading = false;
         state.items = action.payload;
       })
+
       .addCase(fetchCart.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
@@ -143,6 +147,7 @@ const cartSlice = createSlice({
         state.items = action.payload;
         state.error = null;
       })
+
       .addCase(addToCart.rejected, (state, action) => {
         state.error = action.payload || action.error.message;
       })
@@ -151,6 +156,7 @@ const cartSlice = createSlice({
         state.items = action.payload;
         state.error = null;
       })
+
       .addCase(increaseQuantity.rejected, (state, action) => {
         state.error = action.payload || action.error.message;
       })
@@ -159,25 +165,29 @@ const cartSlice = createSlice({
         state.items = action.payload;
         state.error = null;
       })
+
       .addCase(decreaseQuantity.rejected, (state, action) => {
         state.error = action.payload || action.error.message;
       })
 
       .addCase(removeFromCart.fulfilled, (state, action) => {
         state.items = action.payload;
+        state.error = null;
       })
+
       .addCase(removeFromCart.rejected, (state, action) => {
         state.error = action.payload || action.error.message;
       })
 
       .addCase(clearCart.fulfilled, (state, action) => {
         state.items = action.payload;
+        state.error = null;
       })
+
       .addCase(clearCart.rejected, (state, action) => {
         state.error = action.payload || action.error.message;
       })
 
-      // Clear previous user's cart from Redux on logout.
       .addCase(logout, (state) => {
         state.items = [];
         state.loading = false;
@@ -187,3 +197,4 @@ const cartSlice = createSlice({
 });
 
 export default cartSlice.reducer;
+

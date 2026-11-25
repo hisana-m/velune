@@ -26,13 +26,15 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     login: (state, action) => {
-      state.user = action.payload;
+      const user = {
+        ...action.payload,
+        role: action.payload.role || "customer",
+      };
+
+      state.user = user;
       state.isLoggedIn = true;
 
-      localStorage.setItem(
-        "velune-user",
-        JSON.stringify(action.payload)
-      );
+      localStorage.setItem("velune-user", JSON.stringify(user));
     },
 
     logout: (state) => {
